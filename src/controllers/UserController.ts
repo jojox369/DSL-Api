@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import User from '../models/user';
 import UserView from '../views/UserView';
+import * as Yup from 'yup';
+import * as bcrypt from 'bcrypt';
 
 export default {
   async getAll(request: Request, response: Response) {
@@ -26,5 +28,28 @@ export default {
 
   async save(request: Request, response: Response) {
     const { username, password } = request.body;
+
+    const saltRounds = 10;
+
+    const passwordCrypt = await bcrypt.hash(password, saltRounds);
+
+    const userRepository = getRepository(User);
+
+    const data = { username, password: passwordCrypt };
+
+    const schema = Yup.object().shape({
+      username: Yup.string().required(),
+      password: Yup.string().required(),
+    });
+
+    await schema.validate(data, {
+      abortEarly: false,
+    });
+
+    const user = userRepository.create(data);
+
+    await userRepository.save(user);
+
+    return response.status(201).json(user);
   },
 };
