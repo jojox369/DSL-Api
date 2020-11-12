@@ -14,10 +14,6 @@ export class CreateList1604210295752 implements MigrationInterface {
             isGenerated: true,
             generationStrategy: 'increment',
           },
-          {
-            name: 'total',
-            type: 'REAL',
-          },
         ],
       }),
     );
