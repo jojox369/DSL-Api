@@ -5,35 +5,25 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import User from './user';
-import Product from './product';
+import User from './User';
+import ListProduct from './ListProduct';
 
-@Entity()
+@Entity('list')
 export default class List {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
-  total: number;
-
-  @ManyToMany(type => Product, { eager: true, cascade: ['insert', 'update'] })
-  @JoinTable({
-    name: 'list_product',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'list_id',
-      referencedColumnName: 'id',
-    },
+  @ManyToOne(type => User, user => user.lists, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
-  products: Product;
-
-  @ManyToOne(type => User, lists => List, { eager: true })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
+  @OneToMany(() => ListProduct, listProduct => listProduct.list)
+  listProduct: ListProduct[];
 }

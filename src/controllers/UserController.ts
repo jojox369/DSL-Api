@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import User from '../models/user';
+import User from '../models/User';
 import UserView from '../views/UserView';
 import * as Yup from 'yup';
 import * as bcrypt from 'bcrypt';
@@ -27,7 +27,7 @@ export default {
   },
 
   async save(request: Request, response: Response) {
-    const { username, password } = request.body;
+    const { username, password, name } = request.body;
 
     const saltRounds = 10;
 
@@ -35,7 +35,7 @@ export default {
 
     const userRepository = getRepository(User);
 
-    const data = { username, password: passwordCrypt };
+    const data = { username, password: passwordCrypt, name };
 
     const schema = Yup.object().shape({
       username: Yup.string().required(),

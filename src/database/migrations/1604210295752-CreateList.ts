@@ -14,6 +14,20 @@ export class CreateList1604210295752 implements MigrationInterface {
             isGenerated: true,
             generationStrategy: 'increment',
           },
+          {
+            name: 'user_id',
+            type: 'integer',
+          },
+        ],
+        foreignKeys: [
+          {
+            name: 'fk_user',
+            columnNames: ['user_id'],
+            referencedTableName: 'user',
+            referencedColumnNames: ['id'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
         ],
       }),
     );

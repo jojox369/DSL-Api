@@ -7,11 +7,14 @@ export default class User {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   username: string;
 
   @Column()
   password: string;
 
-  @OneToMany(type => List, user => User)
+  @OneToMany(type => List, list => list.user)
   lists: List[];
 }
