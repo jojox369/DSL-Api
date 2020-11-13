@@ -21,6 +21,12 @@ export class ListProduct1605210294257 implements MigrationInterface {
             type: 'integer',
             isNullable: false,
           },
+
+          {
+            name: 'price',
+            type: 'real',
+            isNullable: false,
+          },
         ],
         foreignKeys: [
           {

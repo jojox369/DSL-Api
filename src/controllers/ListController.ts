@@ -10,6 +10,7 @@ import User from '../models/User';
 interface ProductRequest {
   id: number;
   amount: number;
+  price: number;
 }
 
 interface ListProductResponse {
@@ -19,9 +20,14 @@ interface ListProductResponse {
 
 export default {
   async getAll(request: Request, response: Response) {
+    const { user } = request.params;
+    console.log(user);
     const listRepository = getRepository(List);
 
-    const lists = await listRepository.find();
+    const lists = await listRepository.find({
+      where: { user: { id: Number(user) } },
+      relations: ['user'],
+    });
 
     return response.json(ListView.renderMany(lists));
   },
@@ -31,9 +37,7 @@ export default {
 
     const listRepository = getRepository(List);
 
-    const list = await listRepository.findOneOrFail(id, {
-      relations: ['products'],
-    });
+    const list = await listRepository.findOneOrFail(id);
 
     return response.json(ListView.render(list));
   },
@@ -42,7 +46,7 @@ export default {
     let { user, products } = request.body;
 
     products = products.map((product: ProductRequest) => {
-      return { id: product.id, amount: product.amount };
+      return { id: product.id, amount: product.amount, price: product.price };
     });
 
     const listRepository = getRepository(List);
@@ -60,6 +64,7 @@ export default {
         Yup.object().shape({
           id: Yup.number().required(),
           amount: Yup.number().required(),
+          price: Yup.number().required(),
         }),
       ),
     });
@@ -69,6 +74,7 @@ export default {
     });
 
     const list = listRepository.create(data);
+
     const listSaved = await listRepository.save(list);
 
     const listProductData = products.map((product: ProductRequest) => {
@@ -76,6 +82,7 @@ export default {
         list_id: listSaved.id,
         product_id: product.id,
         amount: product.amount,
+        price: product.price,
       };
     });
 
@@ -93,19 +100,36 @@ export default {
     const listProductResponse = {
       list_id: list.id,
       user_id: userResponse.name,
-      products: productsResponse.map(product => product.name),
+      /* products: productsResponse.map(product => {
+        return { name: product.name };
+      }), */
+      products: await Promise.all(
+        listProduct.map(async listProduct => {
+          const product = await productRepository.findOne(
+            listProduct.product_id,
+          );
+          const response = {
+            id: listProduct.product_id,
+            name: product.name,
+            amout: listProduct.amount,
+            price: listProduct.price,
+          };
+          return response;
+        }),
+      ),
     };
 
     return response.status(201).json(listProductResponse);
   },
 
   async update(request: Request, response: Response) {
-    /* const { list } = request.body;
-    const listRepository = getRepository(List);
+    let { id, products } = request.body;
+
+    const listProductRepository = getRepository(ListProduct);
+
     const schema = Yup.object().shape({
-      user: Yup.object().shape({
-        id: Yup.number().required(),
-      }),
+      id: Yup.number().required(),
+
       products: Yup.array(
         Yup.object().shape({
           id: Yup.number().required(),
@@ -113,15 +137,37 @@ export default {
       ),
     });
 
-    await schema.validate(list, {
+    const data = { id, products };
+
+    await schema.validate(data, {
       abortEarly: false,
     });
 
-    const listUpdated = listRepository.create(list);
+    const list = await listProductRepository.find({
+      where: { list_id: Number(id) },
+    });
 
-    await listRepository.update(list.id, listUpdated);
+    list.forEach(async listProduct => {
+      await listProductRepository.delete({
+        list_id: Number(id),
+        product_id: listProduct.product_id,
+      });
+    });
 
-    return response.json(listUpdated); */
+    products = await Promise.all(
+      products.map(async (product: ProductRequest) => {
+        const productSave = listProductRepository.create({
+          list_id: Number(id),
+          product_id: product.id,
+          amount: product.amount,
+          price: product.price,
+        });
+
+        return await listProductRepository.save(productSave);
+      }),
+    );
+
+    return response.json({ id, products });
   },
   async delete(request: Request, response: Response) {},
 };

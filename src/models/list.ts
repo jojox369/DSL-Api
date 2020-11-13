@@ -1,12 +1,8 @@
 import {
-  Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,9 +17,13 @@ export default class List {
   @ManyToOne(type => User, user => user.lists, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
+    eager: true,
   })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
-  @OneToMany(() => ListProduct, listProduct => listProduct.list)
+
+  @OneToMany(() => ListProduct, listProduct => listProduct.list, {
+    eager: true,
+  })
   listProduct: ListProduct[];
 }

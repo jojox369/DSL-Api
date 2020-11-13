@@ -1,5 +1,4 @@
 import List from '../models/list';
-import ProductView from './ProductView';
 import UserView from './UserView';
 
 export default {
@@ -7,7 +6,7 @@ export default {
     return {
       id: list.id,
       user: UserView.render(list.user),
-      products: ProductView.renderMany(list.products),
+      list_product: list.listProduct,
     };
   },
 

@@ -9,6 +9,8 @@ export default class Product {
   @Column()
   name: string;
 
-  @OneToMany(() => ListProduct, listProduct => listProduct.product)
+  @OneToMany(() => ListProduct, listProduct => listProduct.product, {
+    eager: true,
+  })
   listProducts: ListProduct[];
 }

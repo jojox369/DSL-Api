@@ -1,4 +1,4 @@
-import Product from '../models/product';
+import Product from '../models/Product';
 
 export default {
   render(product: Product) {

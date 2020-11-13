@@ -8,6 +8,9 @@ export default class ListProduct {
   @Column()
   amount: number;
 
+  @Column()
+  price: number;
+
   @PrimaryColumn()
   list_id: number;
 
@@ -15,15 +18,15 @@ export default class ListProduct {
   product_id: number;
 
   @ManyToOne(type => List, list => list.listProduct, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'list_id', referencedColumnName: 'id' })
   list: List;
 
   @ManyToOne(type => Product, product => product.listProducts, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
   product: Product;
