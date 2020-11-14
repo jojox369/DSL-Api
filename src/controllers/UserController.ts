@@ -52,4 +52,21 @@ export default {
 
     return response.status(201).json(user);
   },
+
+  async auth(request: Request, response: Response) {
+    const { username, password } = request.body;
+    const userRepository = getRepository(User);
+    const user = await userRepository.findOne({
+      where: { username: username },
+    });
+
+    const verifyPassword = await bcrypt.compare(password, user.password);
+    if (user?.username === username && verifyPassword) {
+      return response.json({ message: 'User authenticated' });
+    } else {
+      return response
+        .status(400)
+        .json({ error: 'Username and/or Password invalid' });
+    }
+  },
 };
