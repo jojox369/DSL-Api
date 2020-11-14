@@ -3,9 +3,9 @@ import { getRepository } from 'typeorm';
 import ListView from '../views/ListView';
 import * as Yup from 'yup';
 import ListProduct from '../models/ListProduct';
-import Product from '../models/Product';
+import Product from '../models/product';
 import List from '../models/list';
-import User from '../models/User';
+import User from '../models/user';
 
 interface ProductRequest {
   id: number;

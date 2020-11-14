@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import List from './list';
-import Product from './Product';
+import Product from './product';
 
 @Entity('list_product')
 export default class ListProduct {

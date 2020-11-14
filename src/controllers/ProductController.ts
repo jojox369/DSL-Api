@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import ProductView from '../views/ProductView';
-import Product from '../models/Product';
+import Product from '../models/product';
 import * as Yup from 'yup';
 
 export default {

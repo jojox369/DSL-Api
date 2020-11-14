@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import User from '../models/User';
+import User from '../models/user';
 import UserView from '../views/UserView';
 import * as Yup from 'yup';
 import * as bcrypt from 'bcrypt';
