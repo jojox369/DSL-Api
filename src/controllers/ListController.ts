@@ -169,5 +169,15 @@ export default {
 
     return response.json({ id, products });
   },
-  async delete(request: Request, response: Response) {},
+  async delete(request: Request, response: Response) {
+    const { id } = request.params;
+    const listRepository = getRepository(List);
+
+    try {
+      await listRepository.delete(id);
+      return response.json({});
+    } catch (err) {
+      return response.json({ message: 'ERROR: cannot delete list' });
+    }
+  },
 };
