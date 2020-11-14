@@ -4,9 +4,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import 'express-async-errors';
 
-import './database';
+import './database/connection';
 
-import routes from './routes';
+import routes from './routes/index.routes';
 import errorHandler from './errors/handler';
 
 dotenv.config();

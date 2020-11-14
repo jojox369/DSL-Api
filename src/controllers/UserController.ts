@@ -60,7 +60,10 @@ export default {
       where: { username: username },
     });
 
-    const verifyPassword = await bcrypt.compare(password, user.password);
+    let passwordCrypt: any;
+    passwordCrypt = user?.password;
+
+    const verifyPassword = await bcrypt.compare(password, passwordCrypt);
     if (user?.username === username && verifyPassword) {
       return response.json({ message: 'User authenticated' });
     } else {

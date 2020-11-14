@@ -108,9 +108,12 @@ export default {
           const product = await productRepository.findOne(
             listProduct.product_id,
           );
+          let productName: any;
+          productName = product?.name;
+
           const response = {
             id: listProduct.product_id,
-            name: product.name,
+            name: productName.name,
             amout: listProduct.amount,
             price: listProduct.price,
           };
