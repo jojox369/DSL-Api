@@ -17,10 +17,13 @@ export default {
     const { id } = request.params;
 
     const productRepository = getRepository(Product);
+    try {
+      const product = await productRepository.findOneOrFail(id);
 
-    const product = await productRepository.findOneOrFail(id);
-
-    return response.json(ProductView.render(product));
+      return response.json(ProductView.render(product));
+    } catch (err) {
+      return response.status(404).json({ warning: 'product not found' });
+    }
   },
 
   async save(request: Request, response: Response) {

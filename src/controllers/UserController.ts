@@ -22,7 +22,7 @@ export default {
       const user = await userRepository.findOneOrFail(id);
       return response.json(UserView.render(user));
     } catch (err) {
-      return response.status(500).json({ message: 'Internal server error' });
+      return response.status(404).json({ warning: 'User not found' });
     }
   },
 

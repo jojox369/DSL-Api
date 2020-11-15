@@ -29,17 +29,26 @@ export default {
       relations: ['user'],
     });
 
-    return response.json(ListView.renderMany(lists));
+    if (lists.length === 0) {
+      return response
+        .status(404)
+        .json({ warning: 'user has no list and/or not exists' });
+    } else {
+      return response.json(ListView.renderMany(lists));
+    }
   },
 
   async getById(request: Request, response: Response) {
     const { id } = request.params;
 
     const listRepository = getRepository(List);
+    try {
+      const list = await listRepository.findOneOrFail(id);
 
-    const list = await listRepository.findOneOrFail(id);
-
-    return response.json(ListView.render(list));
+      return response.json(ListView.render(list));
+    } catch (err) {
+      return response.status(404).json({ warning: 'list not found' });
+    }
   },
 
   async save(request: Request, response: Response) {
