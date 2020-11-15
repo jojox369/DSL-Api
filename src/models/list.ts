@@ -1,4 +1,5 @@
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -13,6 +14,9 @@ import ListProduct from './ListProduct';
 export default class List {
   @PrimaryGeneratedColumn('increment')
   id: number;
+
+  @Column()
+  name: string;
 
   @ManyToOne(type => User, user => user.lists, {
     onDelete: 'CASCADE',

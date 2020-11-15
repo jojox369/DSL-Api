@@ -21,7 +21,7 @@ interface ListProductResponse {
 export default {
   async getAll(request: Request, response: Response) {
     const { user } = request.params;
-    console.log(user);
+
     const listRepository = getRepository(List);
 
     const lists = await listRepository.find({
@@ -43,7 +43,7 @@ export default {
   },
 
   async save(request: Request, response: Response) {
-    let { user, products } = request.body;
+    let { user, products, name } = request.body;
 
     products = products.map((product: ProductRequest) => {
       return { id: product.id, amount: product.amount, price: product.price };
@@ -54,7 +54,7 @@ export default {
     const productRepository = getRepository(Product);
     const userRepository = getRepository(User);
 
-    const data = { user, products };
+    const data = { user, products, name };
 
     const schema = Yup.object().shape({
       user: Yup.object().shape({
@@ -67,6 +67,7 @@ export default {
           price: Yup.number().required(),
         }),
       ),
+      name: Yup.string(),
     });
 
     await schema.validate(data, {
@@ -95,11 +96,13 @@ export default {
     );
 
     //busca o usuario
-    const userResponse = await userRepository.findOneOrFail(user.id);
+    const userResponse = await userRepository.findOne(user.id);
+    const user_name = userResponse?.name;
+    const user_id = userResponse?.id;
 
     const listProductResponse = {
-      list_id: list.id,
-      user_id: userResponse.name,
+      list: { id: list.id, name: list.name },
+      user: { id: user_id, name: user_name },
       /* products: productsResponse.map(product => {
         return { name: product.name };
       }), */
@@ -108,12 +111,11 @@ export default {
           const product = await productRepository.findOne(
             listProduct.product_id,
           );
-          let productName: any;
-          productName = product?.name;
+          const productName = product?.name;
 
           const response = {
             id: listProduct.product_id,
-            name: productName.name,
+            name: productName,
             amout: listProduct.amount,
             price: listProduct.price,
           };
@@ -126,9 +128,10 @@ export default {
   },
 
   async update(request: Request, response: Response) {
-    let { id, products } = request.body;
+    let { id, products, name } = request.body;
 
     const listProductRepository = getRepository(ListProduct);
+    const listRepository = getRepository(List);
 
     const schema = Yup.object().shape({
       id: Yup.number().required(),
@@ -140,13 +143,19 @@ export default {
       ),
     });
 
-    const data = { id, products };
+    const data = { id, products, name };
 
     await schema.validate(data, {
       abortEarly: false,
     });
 
-    const list = await listProductRepository.find({
+    let listUpdate = await listRepository.findOne(id);
+    listUpdate ? (listUpdate.name = name) : '';
+    const user = listUpdate?.user;
+
+    await listRepository.update(id, { user, name });
+
+    let list = await listProductRepository.find({
       where: { list_id: Number(id) },
     });
 
@@ -170,7 +179,7 @@ export default {
       }),
     );
 
-    return response.json({ id, products });
+    return response.json({ list: { id, name: listUpdate?.name }, products });
   },
   async delete(request: Request, response: Response) {
     const { id } = request.params;
