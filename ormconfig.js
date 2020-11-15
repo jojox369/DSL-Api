@@ -7,7 +7,7 @@ module.exports = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   synchronize: true,
-  entities: [rootDir + '/models/*.ts.{js,ts}'],
+  entities: [rootDir + '/models/*.{js,ts}'],
 
   cli: {
     migrationsDir: rootDir + '/database/migrations',
