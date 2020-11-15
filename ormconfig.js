@@ -1,3 +1,5 @@
+const rootDir = process.env.NODE_ENV === 'development' ? 'src' : 'build/src';
+
 module.exports = {
   type: 'mysql',
   host: process.env.MYSQL_HOST,
@@ -5,9 +7,9 @@ module.exports = {
   password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
   synchronize: true,
-  entities: ['./src/models/*.ts'],
+  entities: [rootDir + '/models/*.ts.{js,ts}'],
 
   cli: {
-    migrationsDir: './src/database/migrations',
+    migrationsDir: rootDir + '/database/migrations',
   },
 };
