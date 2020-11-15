@@ -1,11 +1,11 @@
-const rootDir = process.env.NODE_ENV === 'development' ? 'src' : 'build/src';
+const rootDir = process.env.NODE_ENV === 'development' ? 'src' : 'dist';
 
 module.exports = {
-  type: 'mysql',
+  type: 'sqlite',
   host: process.env.MYSQL_HOST,
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
+  database: rootDir + '/database/database.sqlite',
   synchronize: true,
   entities: [rootDir + '/models/*.{js,ts}'],
 
