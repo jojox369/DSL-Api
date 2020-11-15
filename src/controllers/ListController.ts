@@ -30,9 +30,7 @@ export default {
     });
 
     if (lists.length === 0) {
-      return response
-        .status(404)
-        .json({ warning: 'user has no list and/or not exists' });
+      return response.json({ warning: 'user has no list and/or not exists' });
     } else {
       return response.json(ListView.renderMany(lists));
     }

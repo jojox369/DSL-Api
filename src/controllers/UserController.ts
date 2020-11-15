@@ -67,9 +67,7 @@ export default {
     if (user?.username === username && verifyPassword) {
       return response.json({ message: 'User authenticated' });
     } else {
-      return response
-        .status(400)
-        .json({ error: 'Username and/or Password invalid' });
+      return response.json({ error: 'Username and/or Password invalid' });
     }
   },
 };
