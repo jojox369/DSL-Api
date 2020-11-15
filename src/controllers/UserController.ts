@@ -56,18 +56,23 @@ export default {
   async auth(request: Request, response: Response) {
     const { username, password } = request.body;
     const userRepository = getRepository(User);
+
     const user = await userRepository.findOne({
       where: { username: username },
     });
 
-    let passwordCrypt: any;
-    passwordCrypt = user?.password;
-
-    const verifyPassword = await bcrypt.compare(password, passwordCrypt);
-    if (user?.username === username && verifyPassword) {
-      return response.json({ message: 'User authenticated' });
+    if (user === undefined) {
+      return response.json({ error: 'User not found' });
     } else {
-      return response.json({ error: 'Username and/or Password invalid' });
+      let passwordCrypt: any;
+      passwordCrypt = user?.password;
+
+      const verifyPassword = await bcrypt.compare(password, passwordCrypt);
+      if (user?.username === username && verifyPassword) {
+        return response.json({ message: 'User authenticated' });
+      } else {
+        return response.json({ error: 'Username and/or Password invalid' });
+      }
     }
   },
 };
