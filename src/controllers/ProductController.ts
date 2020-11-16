@@ -47,4 +47,15 @@ export default {
 
     return response.status(201).json(product);
   },
+
+  async delete(request: Request, response: Response) {
+    const { id } = request.params;
+    const productRepository = getRepository(Product);
+    await productRepository.delete(id);
+    try {
+      return response.json({});
+    } catch (err) {
+      return response.json({ error: 'Cannot delete product' });
+    }
+  },
 };
