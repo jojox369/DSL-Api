@@ -5,6 +5,7 @@ export default {
   render(list: List) {
     return {
       id: list.id,
+      name: list.name,
       user: UserView.render(list.user),
       list_product: list.listProduct,
     };
