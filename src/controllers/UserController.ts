@@ -69,7 +69,10 @@ export default {
 
       const verifyPassword = await bcrypt.compare(password, passwordCrypt);
       if (user?.username === username && verifyPassword) {
-        return response.json({ message: 'User authenticated', user });
+        return response.json({
+          message: 'User authenticated',
+          user: UserView.render(user),
+        });
       } else {
         return response.json({ error: 'Username and/or Password invalid' });
       }
