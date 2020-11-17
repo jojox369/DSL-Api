@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, Like } from 'typeorm';
 import ListView from '../views/ListView';
 import * as Yup from 'yup';
 import ListProduct from '../models/ListProduct';
@@ -46,6 +46,21 @@ export default {
       return response.json(ListView.render(list));
     } catch (err) {
       return response.status(404).json({ warning: 'list not found' });
+    }
+  },
+
+  async getByName(request: Request, response: Response) {
+    const { name } = request.params;
+
+    const listRepository = getRepository(List);
+    try {
+      const list = await listRepository.find({
+        name: Like(`%${name}%`),
+      });
+
+      return response.json(ListView.renderMany(list));
+    } catch (err) {
+      return response.status(404).json({ warning: 'product not found' });
     }
   },
 

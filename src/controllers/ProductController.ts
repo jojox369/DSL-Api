@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
+import { getRepository, Like } from 'typeorm';
 import ProductView from '../views/ProductView';
 import Product from '../models/product';
 import * as Yup from 'yup';
@@ -21,6 +21,21 @@ export default {
       const product = await productRepository.findOneOrFail(id);
 
       return response.json(ProductView.render(product));
+    } catch (err) {
+      return response.status(404).json({ warning: 'product not found' });
+    }
+  },
+
+  async getByName(request: Request, response: Response) {
+    const { name } = request.params;
+
+    const productRepository = getRepository(Product);
+    try {
+      const product = await productRepository.find({
+        name: Like(`%${name}%`),
+      });
+
+      return response.json(ProductView.renderMany(product));
     } catch (err) {
       return response.status(404).json({ warning: 'product not found' });
     }
