@@ -9,7 +9,6 @@ module.exports = {
   database: process.env.MYSQL_DATABASE,
   synchronize: true,
   entities: [rootDir + '/models/*.{js,ts}'],
-
   cli: {
     migrationsDir: rootDir + '/database/migrations',
   },
