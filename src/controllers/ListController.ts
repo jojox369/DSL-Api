@@ -150,7 +150,8 @@ export default {
   },
 
   async update(request: Request, response: Response) {
-    let { id, products, name } = request.body;
+    const { id } = request.params;
+    let { products, name } = request.body;
 
     const listProductRepository = getRepository(ListProduct);
     const listRepository = getRepository(List);
