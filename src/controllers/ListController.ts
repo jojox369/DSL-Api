@@ -178,7 +178,7 @@ export default {
 
     await listRepository.update(id, { user, name });
 
-    let list = await listProductRepository.find({
+    /* let list = await listProductRepository.find({
       where: { list_id: Number(id) },
     });
 
@@ -187,7 +187,7 @@ export default {
         list_id: Number(id),
         product_id: listProduct.product_id,
       });
-    });
+    }); */
 
     products = await Promise.all(
       products.map(async (product: ProductRequest) => {
