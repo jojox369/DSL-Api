@@ -46,11 +46,17 @@ export default {
       abortEarly: false,
     });
 
-    const user = userRepository.create(data);
+    const verifyUser = await userRepository.findOne({ username });
 
-    await userRepository.save(user);
+    if (verifyUser) {
+      return response.status(403).json({ message: 'User already exists' });
+    } else {
+      const user = userRepository.create(data);
 
-    return response.status(201).json(user);
+      await userRepository.save(user);
+
+      return response.status(201).json(user);
+    }
   },
 
   async auth(request: Request, response: Response) {
