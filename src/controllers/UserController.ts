@@ -49,7 +49,7 @@ export default {
     const verifyUser = await userRepository.findOne({ username });
 
     if (verifyUser) {
-      return response.status(403).json({ message: 'User already exists' });
+      return response.status(200).json({ message: 'User already exists' });
     } else {
       const user = userRepository.create(data);
 
